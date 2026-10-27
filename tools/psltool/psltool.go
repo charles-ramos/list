@@ -117,7 +117,7 @@ func runFmt(env *command.Env, path string) error {
 		if fmtArgs.Diff {
 			lhs, rhs := strings.Split(string(bs), "\n"), strings.Split(string(clean), "\n")
 			diff := mdiff.New(lhs, rhs).AddContext(3)
-			mdiff.FormatUnified(os.Stdout, diff, &mdiff.FileInfo{
+			diff.Format(os.Stdout, mdiff.Unified, &mdiff.FileInfo{
 				Left:  "a/" + path,
 				Right: "b/" + path,
 			})
@@ -244,8 +244,8 @@ func runCheckPR(env *command.Env, prStr string) error {
 	errs = append(errs, parser.ValidateOffline(after)...)
 	if checkPRArgs.Online {
 		var prHistory *githistory.History
-		if validateArgs.Clone != "" {
-			prHistory, err = githistory.GetPRInfo(validateArgs.Clone)
+		if checkPRArgs.Clone != "" {
+			prHistory, err = githistory.GetPRInfo(checkPRArgs.Clone)
 			if err != nil {
 				return fmt.Errorf("failed to get local PR history: %w", err)
 			}
